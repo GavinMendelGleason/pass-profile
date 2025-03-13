@@ -47,7 +47,7 @@ def get_env_value(profile_name, env_var):
 
 def main():
     parser = argparse.ArgumentParser(description='Generate environment variables from pass profiles.')
-    parser.add_argument('profile_name', nargs='?', default='default', 
+    parser.add_argument('profile_name', nargs='?', default='default',
                         help='Name of the profile in pass (stored under Profile/). Defaults to "default"')
 
     args = parser.parse_args()
