@@ -10,10 +10,14 @@ def get_pass_entries(profile_name):
         # List all entries under Profile/{profile_name}
         cmd = ["pass", "ls", f"Profile/{profile_name}"]
         result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        
+
         # Parse the output to get entry names
         entries = []
-        for line in result.stdout.strip().split('\n'):
+        result_list = result.stdout.strip().split('\n')
+        if len(result_list) > 1:
+            result_list = result_list[1:]
+
+        for line in result_list:
             # Skip the first line which is the directory name and empty lines
             if line and not line.endswith('/'):
                 # Extract just the env var name (last part of the path)
@@ -22,7 +26,7 @@ def get_pass_entries(profile_name):
                     entry = entry.split('/')[-1]
                 if entry:
                     entries.append(entry)
-        
+
         return entries
     except subprocess.CalledProcessError as e:
         print(f"Error accessing pass: {e}", file=sys.stderr)
@@ -45,16 +49,16 @@ def main():
     parser = argparse.ArgumentParser(description='Generate environment variables from pass profiles.')
     parser.add_argument('profile_name', nargs='?', default='default', 
                         help='Name of the profile in pass (stored under Profile/). Defaults to "default"')
-    
+
     args = parser.parse_args()
-    
+
     # Get all environment variables stored in the profile
     env_vars = get_pass_entries(args.profile_name)
-    
+
     if not env_vars:
         print(f"No environment variables found for profile '{args.profile_name}'", file=sys.stderr)
         sys.exit(1)
-    
+
     # Generate shell commands to set environment variables
     for env_var in env_vars:
         value = get_env_value(args.profile_name, env_var)
