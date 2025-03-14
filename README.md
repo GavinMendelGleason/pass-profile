@@ -86,3 +86,26 @@ This will set the environment variables `API_KEY` and `DATABASE_URL` in your cur
 - Environment variables are stored securely in your pass password store, which is encrypted with GPG.
 - The tool only outputs the commands to set environment variables; it doesn't store them anywhere else.
 - Be cautious when using `eval` with any command that produces output from external sources.
+
+## Shell Integration
+
+### Zsh Function
+
+For easier usage, you can define a function in your `.zshrc` file:
+
+```zsh
+# Load environment variables from pass profile
+passenv() {
+  local profile=${1:-default}
+  eval "$(python /path/to/main.py $profile)"
+  echo "Loaded environment from profile: $profile"
+}
+```
+
+Then you can simply use:
+
+```bash
+passenv development
+```
+
+This will load all environment variables from the "development" profile, or use "default" if no profile is specified.
