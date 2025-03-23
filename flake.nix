@@ -46,7 +46,7 @@
           packages = rec {
             default = envprof;
             envprof = pkgs.writeShellApplication {
-              name ="pass-profile";
+              name = "pass-profile";
               runtimeInputs = [ pkgs.pass ];
               text = ''exec ${pkgs.python3}/bin/python ${./envprof/main.py} "$@"'';
             };
@@ -61,8 +61,8 @@
         };
       flake = {
         homeModules = {
-            envprof = import ./home-module.nix self.packages;
-          };
+          envprof = import ./home-module.nix self.packages;
         };
+      };
     };
 }

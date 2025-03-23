@@ -1,18 +1,24 @@
 packages:
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
 let
   cfg = config.programs.envprof;
   passenv = ''
-passenv() {
-  local profile=''${1:-default}
-  eval "$(pass-profile $profile)"
-  echo "Loaded environment from profile: $profile"
-}
-'';
-in {
+    passenv() {
+      local profile=''${1:-default}
+      eval "$(pass-profile $profile)"
+      echo "Loaded environment from profile: $profile"
+    }
+  '';
+in
+{
   options.programs.envprof = {
     enable = mkEnableOption "envprof - environment variable profile manager";
 
