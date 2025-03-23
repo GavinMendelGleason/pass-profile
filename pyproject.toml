@@ -1,7 +1,14 @@
 [project]
 name = "envprof"
 version = "0.1.0"
-description = "Add your description here"
+description = "Pass Profile Manager"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+pass-profile = "envprof.main:main"
