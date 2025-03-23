@@ -8,7 +8,7 @@
   };
 
   outputs =
-    inputs@{ flake-parts, ... }:
+    inputs@{ self, flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         inputs.treefmt-nix.flakeModule
@@ -57,6 +57,11 @@
               type = "app";
               program = "${self'.packages.envprof}/bin/pass-profile";
             };
+          };
+        };
+      flake = {
+        homeModules = {
+            envprof = import ./home-module.nix self.packages;
           };
         };
     };
