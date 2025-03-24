@@ -13,24 +13,54 @@ This tool allows you to store environment variables securely in your pass passwo
 
 ## Installation
 
-Clone this repository and ensure the script is executable:
+### Using pipx (recommended)
+
+The easiest way to install Pass Profile Manager is using [pipx](https://pypa.github.io/pipx/), which installs the package in an isolated environment:
 
 ```bash
-git clone <repository-url>
-cd <repository-directory>
-chmod +x main.py
+pipx install git+https://github.com/GavinMendelGleason/pass-profile.git
 ```
 
-You may want to create a symlink to the script in a directory that's in your PATH:
+### Using Nix
+
+#### With nix profile
+
+You can install Pass Profile Manager using the Nix package manager:
 
 ```bash
-ln -s $(pwd)/main.py ~/.local/bin/pass-profile
+nix profile install github:GavinMendelGleason/pass-profile
+```
+
+#### With Home Manager
+
+If you use Home Manager, add this to your flake inputs:
+```nix
+pass-profile = {
+  url = "github:GavinMendelGleason/pass-profile";
+  inputs.nixpkgs.follows = "nixpkgs";
+};
+```
+
+Then add the following to your configuration:
+
+```nix
+{ pkgs, ... }:
+
+{
+  imports = [
+    # Import the home-module from the flake
+    inputs.pass-profile.homeModules.pass-profile
+  ];
+  
+  # Enable the module
+  programs.pass-profile.enable = true;
+}
 ```
 
 ## Usage
 
 ```bash
-python main.py [profile_name]
+pass-profile-dump-vars [profile_name]
 ```
 
 Where `profile_name` is the name of the profile stored in pass (under `Profile/`). If not specified, it defaults to "default".
@@ -38,14 +68,14 @@ Where `profile_name` is the name of the profile stored in pass (under `Profile/`
 To load the environment variables into your current shell, use:
 
 ```bash
-eval $(python main.py [profile_name])
+eval $(pass-profile-dump-vars [profile_name])
 ```
 
 ## How It Works
 
 1. The tool looks for environment variables stored in your pass password store under `Profile/<profile_name>/`.
-2. Each entry under this path is treated as an environment variable, with the entry name as the variable name and its content as the value.
-3. The tool outputs shell commands to set these environment variables, which can be evaluated by your shell.
+1. Each entry under this path is treated as an environment variable, with the entry name as the variable name and its content as the value.
+1. The tool outputs shell commands to set these environment variables, which can be evaluated by your shell.
 
 ## Setting Up Profiles
 
@@ -61,12 +91,13 @@ pass insert Profile/myproject/DATABASE_URL
 2. Load them into your shell:
 
 ```bash
-eval $(python main.py myproject)
+eval $(pass-profile-dump-vars myproject)
 ```
 
 ## Example
 
 Storing environment variables:
+
 ```bash
 pass insert Profile/development/API_KEY
 # Enter your API key when prompted
@@ -75,8 +106,9 @@ pass insert Profile/development/DATABASE_URL
 ```
 
 Loading the environment variables:
+
 ```bash
-eval $(python main.py development)
+eval $(pass-profile-dump-vars development)
 ```
 
 This will set the environment variables `API_KEY` and `DATABASE_URL` in your current shell session.
@@ -89,11 +121,13 @@ This will set the environment variables `API_KEY` and `DATABASE_URL` in your cur
 
 ## Shell Integration
 
-### Zsh Function
+### Shell Integration
 
-For easier usage, you can define a function in your `.zshrc` file:
+#### Bash/Zsh Function
 
-```zsh
+For easier usage, you can define a function in your `.bashrc` or `.zshrc` file:
+
+```bash
 # Load environment variables from pass profile
 pass-profile() {
   local profile=${1:-default}
@@ -105,7 +139,23 @@ pass-profile() {
 Then you can simply use:
 
 ```bash
-passenv development
+pass-profile development
 ```
 
 This will load all environment variables from the "development" profile, or use "default" if no profile is specified.
+
+#### Fish Function
+
+For Fish shell users, add this to your `~/.config/fish/functions/pass-profile.fish`:
+
+```fish
+function pass-profile
+  set profile $argv[1]
+  if test -z "$profile"
+    set profile "default"
+  end
+  
+  eval (pass-profile-dump-vars $profile)
+  echo "Loaded environment from profile: $profile"
+end
+```
