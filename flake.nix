@@ -46,7 +46,7 @@
           packages = rec {
             default = pass-profile;
             pass-profile = pkgs.writeShellApplication {
-              name = "pass-profile";
+              name = "pass-profile-dump-vars";
               runtimeInputs = [ pkgs.pass ];
               text = ''exec ${pkgs.python3}/bin/python ${./pass_profile/main.py} "$@"'';
             };
