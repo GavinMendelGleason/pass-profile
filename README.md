@@ -95,9 +95,9 @@ For easier usage, you can define a function in your `.zshrc` file:
 
 ```zsh
 # Load environment variables from pass profile
-passenv() {
+pass-profile() {
   local profile=${1:-default}
-  eval "$(python /path/to/main.py $profile)"
+  eval "$(pass-profile-dump-vars $profile)"
   echo "Loaded environment from profile: $profile"
 }
 ```

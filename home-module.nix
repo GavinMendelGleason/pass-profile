@@ -9,42 +9,42 @@ packages:
 with lib;
 
 let
-  cfg = config.programs.envprof;
-  passenv = ''
-    passenv() {
+  cfg = config.programs.pass-profile;
+  pass-profile = ''
+    pass-profile() {
       local profile=''${1:-default}
-      eval "$(pass-profile $profile)"
+      eval "$(pass-profile-dump-vars $profile)"
       echo "Loaded environment from profile: $profile"
     }
   '';
 in
 {
-  options.programs.envprof = {
-    enable = mkEnableOption "envprof - environment variable profile manager";
+  options.programs.pass-profile = {
+    enable = mkEnableOption "pass-profile - environment variable profile manager";
 
     package = mkOption {
       type = types.package;
-      default = packages.${pkgs.system}.envprof;
-      description = "The envprof package to use.";
+      default = packages.${pkgs.system}.pass-profile;
+      description = "The pass-profile package to use.";
     };
 
     enableZshIntegration = mkOption {
       type = types.bool;
       default = config.programs.zsh.enable;
-      description = "Whether to enable envprof integration with Zsh.";
+      description = "Whether to enable pass-profile integration with Zsh.";
     };
 
     enableBashIntegration = mkOption {
       type = types.bool;
       default = config.programs.bash.enable;
-      description = "Whether to enable envprof integration with Bash.";
+      description = "Whether to enable pass-profile integration with Bash.";
     };
   };
 
   config = mkIf cfg.enable {
     home.packages = [ cfg.package ];
 
-    programs.zsh.initExtra = mkIf cfg.enableZshIntegration passenv;
-    programs.bash.initExtra = mkIf cfg.enableBashIntegration passenv;
+    programs.zsh.initExtra = mkIf cfg.enableZshIntegration pass-profile;
+    programs.bash.initExtra = mkIf cfg.enableBashIntegration pass-profile;
   };
 }
