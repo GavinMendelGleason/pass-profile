@@ -62,12 +62,13 @@ in
       example = literalExpression ''
         {
           default = {
-            GITHUB_TOKEN = "Social/github";
-            AWS_ACCESS_KEY = "Work/aws/access_key";
+            GITHUB_TOKEN = "Social/github/token";
+            NPM_AUTH_TOKEN = "Development/npm/auth_token";
           };
           work = {
+            AWS_ACCESS_KEY_ID = "Work/aws/access_key_id";
+            AWS_SECRET_ACCESS_KEY = "Work/aws/secret_key";
             JIRA_API_TOKEN = "Work/jira/api_token";
-            SLACK_TOKEN = "Work/slack/token";
           };
         }
       '';
