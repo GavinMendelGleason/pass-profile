@@ -91,7 +91,7 @@ in
       "pass-profile/profile".target = ".pass-profile/profile";
     };
 
-    programs.zsh.initExtra = mkIf cfg.enableZshIntegration pass-profile;
+    programs.zsh.initContent = mkIf cfg.enableZshIntegration pass-profile;
     programs.bash.initExtra = mkIf cfg.enableBashIntegration pass-profile;
   };
 }
